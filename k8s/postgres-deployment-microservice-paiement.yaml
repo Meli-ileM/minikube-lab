@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paiement-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paiement-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paiement-postgres
+  template:
+    metadata:
+      labels:
+        app: paiement-postgres
+    spec:
+      containers:
+      - name: paiement-postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: service2db
+        - name: POSTGRES_USER
+          value: service1user
+        - name: POSTGRES_PASSWORD
+          value: service1pass
+        volumeMounts:
+        - name: paiement-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: paiement-storage
+        persistentVolumeClaim:
+          claimName: paiement-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paiement-postgres-service
+spec:
+  selector:
+    app: paiement-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

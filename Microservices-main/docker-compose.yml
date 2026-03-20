@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+  discovery-service:
+    image: discovery-service:1.0
+    container_name: discovery-service
+    ports:
+      - "9761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  config-service:
+    image: config-service:1.0
+    container_name: config-service
+    ports:
+      - "9888:8888"
+    depends_on:
+      - discovery-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+
+  catalogue-service:
+    image: catalogue-service:1.0
+    container_name: catalogue-service
+    ports:
+      - "9081:8080"
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+
+  commande-service:
+    image: commande-service:1.0
+    container_name: commande-service
+    ports:
+      - "9082:8080"
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+
+  paiement-service:
+    image: paiement-service:1.0
+    container_name: paiement-service
+    ports:
+      - "9083:8080"
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+
+  gateway-service:
+    image: gateway-service:1.0
+    container_name: gateway-service
+    ports:
+      - "9084:8080"
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka

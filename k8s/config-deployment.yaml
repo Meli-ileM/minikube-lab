@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-service
+  template:
+    metadata:
+      labels:
+        app: config-service
+    spec:
+      containers:
+        - name: config-service
+          image: config-service1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8888
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker

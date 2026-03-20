@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paiement-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paiement-service
+  template:
+    metadata:
+      labels:
+        app: paiement-service
+    spec:
+      containers:
+        - name: paiement-service
+          image: paiement-service1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: CONFIGSERVERURL
+              value: http://config-service:8888
+            - name: EUREKASERVERURL
+              value: http://discovery-service:8761/eureka
