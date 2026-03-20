@@ -212,4 +212,16 @@ git push -u origin master
 
 ---
 
-**Tout le TP est prêt dans ce dossier. Suis ce README pour chaque étape.**
+## 8. Supervision du cluster
+
+Voici des exemples de vues du dashboard Kubernetes :
+
+### Statut global du cluster
+
+![Statut du cluster](images/dashboard-status.png)
+
+### Liste des déploiements
+
+![Liste des déploiements](images/deployments-list.png)
+
+

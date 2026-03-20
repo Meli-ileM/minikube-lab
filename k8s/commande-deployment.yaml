@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: commande-service
-          image: commande-service1.0
+          image: commande-service:1.0
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
